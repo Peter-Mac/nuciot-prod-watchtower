@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  watchtower: #automatic container version monitoring and updating
+    container_name: watchtower
+    image: containrrr/watchtower:latest-dev
+    environment: 
+      - TZ=$TZ
+      - DEBUG=true
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_NOTIFICATIONS=shoutrrr
+      - WATCHTOWER_NOTIFICATION_URL=pushover://shoutrrr:${PUSH_TOKEN}@${PUSH_KEY}
+      - DOCKER_HOST=tcp://socket-proxy:2375
+    command: --interval 86400
+    restart: unless-stopped
+    volumes:
+      - $LOCALTIME
+    networks:
+      - socket_proxy 
+
+networks:
+  socket_proxy: 
+    external: true
